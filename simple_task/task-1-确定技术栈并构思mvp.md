@@ -1,6 +1,6 @@
 ---
-created_at: 2026-08-11T11:28:00+08:0
-status: todo # done | todo
+created_at: 2026-08-11T11:28:00+08:00
+status: done # done | todo
 ---
 
 # 目的
@@ -46,7 +46,7 @@ task内部使用frontmatter记录元信息，创建task时候直接写入：
 ```markdown
 ---
 created_at: 2026-08-11T15:30:00+08:00
-status: todo # done | in progress | todo
+status: todo # done | todo
 ---
 
 xxx任务的具体描述，执行过程和执行结果，验收想法等记录
@@ -63,3 +63,35 @@ xxx任务的具体描述，执行过程和执行结果，验收想法等记录
 ### agent
 
 `simple_task help`：直接返回一段说明，说明create就是创建，然后update更新状态，以及这个cli的操作逻辑，给以上的例子，元信息只能用cli修改，内容可以直接修改文件
+
+---
+
+# 执行记录
+
+## 实现
+
+使用 cobra（go.mod 中已是 cobra，非 corba）实现，目录结构：
+
+```
+cmd/
+├── root.go      # 根命令 + 自定义 help（含完整工作流说明和示例）
+├── init.go      # simple_task init [--path=...]
+├── create.go    # simple_task create --title=xxx
+├── update.go    # simple_task update --id=1 --status=done
+└── list.go      # simple_task list [--status=xxx]
+main.go          # 入口
+```
+
+各命令行为：
+
+| 命令 | 行为 |
+|---|---|
+| `simple_task help` | 显示工作流、规则、所有命令示例 |
+| `simple_task init [--path=...]` | 创建 `simple_task/` 目录 + 写入/追加 `AGENT.md`（已存在则提示） |
+| `simple_task create --title=xxx` | 扫描已有编号取最大 N+1，创建 `task-N-xxx.md`，写入 frontmatter（ISO 8601 时间 + `status: todo # done | todo`） |
+| `simple_task list [--status=xxx]` | 列出所有任务，可按 status 过滤 |
+| `simple_task update --id=1 --status=done` | 精确替换 frontmatter 中的 `status:` 行，校验只允许 `todo` / `done` |
+
+## 修 bug
+
+- `readStatus` / `updateStatus` 中 `line == "---"` 无法匹配 Windows `\r\n` 换行，改为 `strings.TrimSpace(line) == "---"`
