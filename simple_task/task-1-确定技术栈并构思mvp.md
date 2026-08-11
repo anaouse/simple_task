@@ -49,7 +49,6 @@ created_at: 2026-08-11T15:30:00+08:00
 status: todo # done | todo
 ---
 
-xxx任务的具体描述，执行过程和执行结果，验收想法等记录
 ```
 
 每个项目下的simple_task文件夹就存放每个任务

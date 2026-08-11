@@ -48,7 +48,6 @@ created_at: %s
 status: todo # done | todo
 ---
 
-xxx任务的具体描述，执行过程和执行结果，验收想法等记录
 `, now)
 
 	if err := os.WriteFile(filePath, []byte(frontmatter), 0644); err != nil {
