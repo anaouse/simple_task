@@ -30,7 +30,8 @@ func runList(cmd *cobra.Command, args []string) error {
 
 	taskDir := filepath.Join(cwd, "simple_task")
 	if info, err := os.Stat(taskDir); err != nil || !info.IsDir() {
-		return fmt.Errorf("simple_task 文件夹不存在，请先运行 simple_task init")
+		fmt.Println("暂无任务")
+		return nil
 	}
 
 	entries, err := os.ReadDir(taskDir)

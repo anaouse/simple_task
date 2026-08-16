@@ -31,8 +31,8 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	}
 
 	taskDir := filepath.Join(cwd, "simple_task")
-	if info, err := os.Stat(taskDir); err != nil || !info.IsDir() {
-		return fmt.Errorf("simple_task 文件夹不存在，请先运行 simple_task init")
+	if err := os.MkdirAll(taskDir, 0755); err != nil {
+		return fmt.Errorf("创建 simple_task 文件夹失败: %w", err)
 	}
 
 	// 找到下一个任务编号
@@ -43,14 +43,15 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	// 获取 ISO 8601 时间（带时区偏移）
 	now := time.Now().Format("2006-01-02T15:04:05-07:00")
 
-	frontmatter := fmt.Sprintf(`---
+	content := fmt.Sprintf(`---
 created_at: %s
 status: todo # done | todo
 ---
 
+> 人下达task，你执行task并记录执行过程，人验收后记录验收看到的东西判断是否完成，你继续执行task，直到人认为结束了再手动修改status
 `, now)
 
-	if err := os.WriteFile(filePath, []byte(frontmatter), 0644); err != nil {
+	if err := os.WriteFile(filePath, []byte(content), 0644); err != nil {
 		return fmt.Errorf("创建任务文件失败: %w", err)
 	}
 

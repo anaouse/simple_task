@@ -13,23 +13,16 @@ go build -o simple_task.exe .
 ## 使用
 
 ```
-simple_task init                  初始化项目（创建 simple_task/ 和 AGENT.md）
-simple_task create --title=xxx     创建新任务
-simple_task list [--status=xxx]    列出任务，可按状态过滤
-simple_task update --id=1 --status=done  更新任务状态
+simple_task create --title=xxx   创建新任务（不存在 simple_task/ 时会自动创建，生成 task-N-xxx.md）
+simple_task list [--status=xxx]  列出任务，可按状态过滤
 ```
 
 ### 工作流
 
-1. `simple_task init` 初始化，生成 `simple_task/` 文件夹和把使用方法加入到 `AGENT.md`
-2. `simple_task create --title=确定技术栈` 创建任务文件 `task-N-xxx.md`
+1. `simple_task create --title=确定技术栈` 创建任务文件 `task-N-xxx.md`
+2. `simple_task list` 列出任务
 3. 让 Agent 读取任务文件并完成，Agent 直接编辑 markdown 内容
-4. 验收通过后 `simple_task update --id=1 --status=done`
-
-## 规则
-
-- 元信息（frontmatter 中的 `status` / `created_at`）只能通过 CLI 修改
-- 任务描述、执行过程等内容可直接编辑 markdown 文件
+4. 验收通过后，人手动把任务文件 frontmatter 中的 `status` 改为 `done`
 
 ## 示例任务文件
 
@@ -39,5 +32,5 @@ created_at: 2026-01-15T10:30:00+08:00
 status: todo # done | todo
 ---
 
-此处为任务描述和执行过程，Agent 可自由编辑。
+> 人下达task，你执行task并记录执行过程，人验收后记录验收看到的东西判断是否完成，你继续执行task，直到人认为结束了再手动修改status
 ```
